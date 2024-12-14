@@ -1,9 +1,10 @@
 .hero{
-    height: 96vh;
+    height: fit-content;
     display: flex;
     background: linear-gradient( #e0cdd6,rgb(196, 160, 160) 70%);
     margin:10px 60px;
     border-radius: 30px;
+    
 }
 
 .hero-left{
@@ -45,4 +46,85 @@ color: rgb(215, 17, 211);
     color: white;
     font-size: 22px;
     font-weight: 500;
+}
+
+.hero-right{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+   
+}
+
+@media(max-width:1280px){
+    .hero-left{
+        padding-left: 100px;
+    }
+    .hero-left h2{
+font-size: 22px;
+    }
+    .hero-left p{
+        font-size: 45px;
+    }
+    .hero-latest-btn{
+        gap: 10px;
+        width: 250px;
+        height: 60px;
+        margin-top: 20px;
+        font-size: 18px;
+    }
+    .hero-right img{
+        width: 350px;
+    }
+}
+
+@media(max-width:1024px){
+    .hero-left{
+        padding-left: 70px;
+    }
+    .hero-left h2{
+font-size: 20px;
+    }
+    .hero-left p{
+        font-size: 40px;
+    }
+    .hero-latest-btn{
+        width: 220px;
+        height: 50px;
+        font-size: 16px;
+    }
+    .hero-right img{
+        width: 300px;
+    }
+}
+
+@media(max-width:800px){
+    .hero-left{
+        padding-left: 30px;
+    }
+    .hero-left h2{
+font-size: 10px;
+    }
+    .hero-left p{
+        font-size: 30px;
+    }
+    .hero-latest-btn{
+        width: 170px;
+        height: 40px;
+        font-size: 13px;
+    }
+    .hero-right img{
+        width: 250px;
+    }
+}
+
+@media(max-width:620px){
+    .hero{
+        flex-direction: column;
+        height: 300px;
+        
+    }
+    .hero-right{
+        display: none;
+    }
 }

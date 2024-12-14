@@ -48,3 +48,58 @@
     justify-content: flex-end;
     padding-top: 10px;
 }
+
+@media(max-width:1080px){
+    .offers{
+        padding: 0px 60px;
+        margin-bottom: 60px;
+    }
+    .offers-left h1{
+        font-size: 28px;
+    }
+    .offers-left p{
+        font-size: 13px;
+    }
+    .offers-left button{
+        width: 140px;
+        height: 30px;
+        font-size: 12px;
+    }
+    .offers-right img{
+        width: 270px;
+    }
+}
+
+@media(max-width:800px){
+    .offers-right img{
+        width: 200px;
+    }
+}
+
+@media(max-width:600px){
+    .offers{
+       height: 25vh;
+        margin-bottom: 50px;
+        
+    }
+    .offers-left h1{
+        font-size: 16px;
+    }
+    .offers-left p{
+        font-size: 10px;
+    }
+    .offers-left button{
+        width: 140px;
+        height: 30px;
+        font-size: 12px;
+    }
+    .offers-right img{
+        width: 120px;
+    }
+    .offers-left button{
+        width: 120px;
+        height: 25px;
+        font-size: 10px;
+        margin-top: 12px;
+    }
+}
