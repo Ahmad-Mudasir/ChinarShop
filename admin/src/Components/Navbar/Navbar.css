@@ -1,0 +1,44 @@
+/* Navbar container */
+.navbar {
+    display: flex;
+    width: 100%;
+    z-index: 1000; 
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #dadfe3,#93afcf);
+    color: #ecf0f1; /* Light text color */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  }
+  
+  /* Logo section */
+  .navbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between logo and text */
+  }
+  
+  .navbar-logo img {
+    height: 40px; /* Adjust logo size */
+    width: auto;
+  }
+  
+  .navbar-logo span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #e67e22; /* Orange color for the shop name */
+  }
+  
+  /* Profile section */
+  .navbar-profile img {
+    height: 40px; /* Adjust profile icon size */
+    width: 40px;
+    border-radius: 50%; /* Circular profile icon */
+    border: 2px solid #e67e22; /* Orange border */
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .navbar-profile img:hover {
+    transform: scale(1.1); /* Slight zoom on hover */
+  }
