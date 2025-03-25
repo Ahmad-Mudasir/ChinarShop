@@ -85,7 +85,7 @@ const productSchema = new mongoose.Schema({
     type: Boolean,
     default: true, // Default to true (product is available)
   },
-});
+} );
 
 // Create the Product model
 const Product = mongoose.model('Product', productSchema);
@@ -184,6 +184,238 @@ app.get('/allproducts', async (req, res) => {
       success: false,
       message: 'Internal server error',
     });
+  }
+});
+
+//Api endpoint for new collection
+app.get('/newcollections', async (req, res) => {
+  try {
+    // Fetch all products from the database
+    const products = await Product.find({});
+    let newcollections = products.slice(1).slice(-8);
+
+    // If no products are found, return an empty array
+    if (!newcollections || newcollections.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'No newcollections products found',
+        newcollections: [],
+      });
+    }
+
+    // If products are found, return them in the response
+    res.status(200).json({
+      success: true,
+      message: 'All newcollections products retrieved successfully',
+      newcollections,
+    });
+  } catch (error) {
+    // Handle any errors that occur during the process
+    console.error('Error fetching newcollections products:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+});
+
+//api endpoint for popular product
+app.get('/popular-women', async (req, res) => {
+  try {
+    // Fetch all products from the database where category is 'women'
+    const Products = await Product.find({ category: "women" });
+     const popularWomenProducts = Products.slice(0,4)
+    // If no products are found, return an empty array
+    if (!popularWomenProducts || popularWomenProducts.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "No popular women's products found",
+        products: [],
+      });
+    }
+
+    // If products are found, return them in the response
+    res.status(200).json({
+      success: true,
+      message: "Popular women's products retrieved successfully",
+      products: popularWomenProducts,
+    });
+  } catch (error) {
+    // Handle any errors that occur during the process
+    console.error("Error fetching popular women's products:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+});
+
+
+//schema for user
+const userSchema = new mongoose.Schema({
+  name: {
+      type: String,
+      required: true,
+      trim: true
+  },
+  email: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+      lowercase: true
+  },
+  password: {
+      type: String,
+      required: true,
+  },
+  cartData: {
+      type: Object,
+  },
+  date: {
+      type: Date,
+      default: Date.now // Automatically sets to the current date and time
+  }
+});
+
+const User = mongoose.model('User', userSchema);
+
+// Signup Route api endpoint
+app.post("/signup", async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    // Check if user already exists
+    let user = await User.findOne({ email });
+    if (user) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+     let cart = {};
+     for (let i = 0; i < 300; i++) {
+      cart[i] = 0;
+  }
+
+    // Create user
+    user = new User({ name, email, password, cartData:cart});
+    await user.save();
+
+    // Generate JWT Token
+    const token = jwt.sign({ id: user.id }, 'secret_ecom', {
+      expiresIn: "1h",
+    });
+
+    res.status(201).json({ message: "User registered successfully", token });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+//create login endponit
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Check if user exists
+    let user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email" });
+    }
+
+    // Compare passwords (assuming passwords are hashed in the DB)
+    const isMatch = password === user.password;
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid  password" });
+    }
+
+    // Generate JWT Token
+    const token = jwt.sign({ id: user.id }, "secret_ecom", { expiresIn: "1h" });
+
+    res.status(200).json({ message: "Login successful", token });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+//creating midleware to fetch user
+const fetchUser = async (req,res,next)=>{
+  const token = req.header('token');
+  if(!token){
+    res.status(401).send({errors:'please authenticate using valide user'})
+  }
+  else{
+    try {
+      const data = jwt.verify(token,'secret_ecom');
+      req.user = {id:data.id};
+      next();
+    } catch (error) {
+      res.status(401).send({errors:'please authentictae using a valide user'})
+    }
+  }
+}
+
+//creating endpoint for add to cartdata
+app.post('/addtocart',fetchUser,async(req,res)=>{
+  console.log('hello',req.body,req.user);
+  
+  try {
+    const user = await User.findOne({ _id: req.user.id }); // Access user ID as req.user.id
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    user.cartData[req.body.itemId] += 1; // Increment the item count in the cart
+    
+    await User.findOneAndUpdate({_id:req.user.id},{cartData:user.cartData})
+    console.log('User document saved successfully');
+    res.json({ success: true, message: 'Item added to cart', cartData: user.cartData });
+  } catch (error) {
+    console.error('Error adding item to cart:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+
+});
+
+//creating endpoint for remove cartdata
+app.post('/removefromcart',fetchUser,async(req,res)=>{
+  console.log('hello',req.body,req.user);
+  
+  try {
+    const user = await User.findOne({ _id: req.user.id }); // Access user ID as req.user.id
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+     if(user.cartData[req.body.itemId] > 0)
+    user.cartData[req.body.itemId] -= 1; // Increment the item count in the cart
+   
+    await User.findOneAndUpdate({_id:req.user.id},{cartData:user.cartData})
+    console.log('User document saved successfully');
+    res.json({ success: true, message: 'Item remove from cart', cartData: user.cartData });
+  } catch (error) {
+    console.error('Error adding item to cart:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+
+});
+
+//endpoint for getcartdata
+app.post('/getcartdata', fetchUser, async (req, res) => {
+  try {
+    // Find the user by their _id (MongoDB's default primary key)
+    const user = await User.findOne({ _id: req.user.id });
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Return the user's cartData
+    res.json({
+      success: true,
+      message: 'Cart data retrieved successfully',
+      cartData: user.cartData,
+    });
+  } catch (error) {
+    console.error('Error fetching cart data:', error);
+    res.status(500).json({ success: false, message: 'Internal server error' });
   }
 });
 
