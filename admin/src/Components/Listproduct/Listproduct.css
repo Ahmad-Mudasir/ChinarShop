@@ -43,9 +43,29 @@ body {
   width: 100%;
   flex-direction: column;
   height: 100vh;
-  background-color: var(--bg-primary);
-  box-shadow: var(--shadow);
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  border-radius: 20px;
+  margin: 20px;
+  position: relative;
+}
+
+.product-dashboard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
+  background-size: 300% 300%;
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 /* Fixed header */
@@ -56,19 +76,28 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: var(--bg-primary);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
   z-index: 10;
+  border-radius: 20px 20px 0 0;
 }
 
 .dashboard-header h2 {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--text-primary);
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .dashboard-header p {
   color: var(--text-secondary);
   font-size: 0.875rem;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 500;
 }
 
 /* Scrollable content area */
@@ -151,14 +180,21 @@ body {
   gap: 12px;
   grid-template-columns: 60px 1fr 80px 100px 100px 60px;
   align-items: center;
-  padding: 0.75rem 1rem;
+  padding: 1rem;
   border-bottom: 1px solid var(--border-color);
-  transition: background-color 0.2s;
+  transition: all 0.3s ease;
   white-space: nowrap;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  margin: 8px 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .product-row:hover {
-  background-color: var(--bg-tertiary);
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
 }
 
 /* Responsive grid for mobile */
@@ -239,21 +275,23 @@ body {
 
 /* Delete button */
 .delete-btn {
-  background-color: transparent;
-  color: var(--text-light);
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
   border: none;
   cursor: pointer;
-  padding: 0.375rem;
-  border-radius: var(--radius-sm);
-  transition: var(--transition);
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
 }
 
 .delete-btn:hover {
-  color: var(--danger-color);
-  background-color: rgba(239, 68, 68, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+  background: linear-gradient(135deg, #ee5a24, #ff6b6b);
 }
 
 /* Responsive adjustments for very small screens */
