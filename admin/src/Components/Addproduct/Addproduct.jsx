@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { API_ENDPOINTS } from "../../config/api";
 import "./Addproduct.css";
 
 const Addproduct = () => {
@@ -42,7 +43,7 @@ const Addproduct = () => {
 
     try {
       // Upload image first
-      const uploadResponse = await axios.post("http://localhost:4000/upload", formData, {
+      const uploadResponse = await axios.post(API_ENDPOINTS.UPLOAD, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
@@ -51,7 +52,7 @@ const Addproduct = () => {
 
         // Send product details including uploaded image URL
         const productData = { ...product, image: imageUrl };
-        const productResponse = await axios.post("http://localhost:4000/addproduct", productData);
+        const productResponse = await axios.post(API_ENDPOINTS.ADD_PRODUCT, productData);
 
         if (productResponse.data.success) {
           toast.success("Product added successfully!");

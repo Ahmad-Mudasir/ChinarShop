@@ -1,4 +1,5 @@
 import { createContext, useState,useEffect } from "react";
+import { API_ENDPOINTS } from '../config/api';
 
 export const ShopContext = createContext(null);
 
@@ -19,7 +20,7 @@ const getDefaultCart = ()=>{
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch("http://localhost:4000/allproducts"); // Replace with your API endpoint
+        const response = await fetch(API_ENDPOINTS.ALL_PRODUCTS); // Replace with your API endpoint
         const data = await response.json();
         console.log("Fetched Products:", data); // Log the fetched data
         // Extract the `products` array from the response
@@ -43,7 +44,7 @@ const getDefaultCart = ()=>{
     }
 
     try {
-      const response = await fetch('http://localhost:4000/getcartdata', {
+      const response = await fetch(API_ENDPOINTS.GET_CART_DATA, {
         method: 'POST',
         headers: {
           'token': token, // Send the token in the headers
@@ -77,7 +78,7 @@ const getDefaultCart = ()=>{
   
     if (token) {
       try {
-        const response = await fetch("http://localhost:4000/addtocart", {
+        const response = await fetch(API_ENDPOINTS.ADD_TO_CART, {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -103,7 +104,7 @@ const getDefaultCart = ()=>{
   
     if (token) {
       try {
-        const response = await fetch("http://localhost:4000/removefromcart", {
+        const response = await fetch(API_ENDPOINTS.REMOVE_FROM_CART, {
           method: "POST",
           headers: {
             Accept: "application/json",

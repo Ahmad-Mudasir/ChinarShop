@@ -5,31 +5,47 @@ const jwt = require("jsonwebtoken");
 const multer = require("multer");
 const path = require("path");
 const cors = require("cors");
+const cloudinary = require("cloudinary").v2;
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+require('dotenv').config();
+
+console.log(process.env.CLOUDINARY_API_KEY);
 
 app.use(cors());
 app.use(express.urlencoded({ extended: true })); // Add this
 app.use(express.json());
 
 
-const port = 4000;
+const port = process.env.PORT || 4000;
 
 // Database connection with MongoDB
 mongoose.connect(
-  "mongodb+srv://nawaz311412:chinarShop@cluster0.z8qfv.mongodb.net/chinarShop?authSource=admin&retryWrites=true&w=majority"
+  process.env.MONGODB_URI || "mongodb+srv://nawaz311412:chinarShop@cluster0.z8qfv.mongodb.net/chinarShop?authSource=admin&retryWrites=true&w=majority"
 )
 .then(() => console.log("Database Connected"))
 .catch((error) => console.error("Database Connection Failed:", error.message));
 
-// Image storage engine
-const storage = multer.diskStorage({
-  destination: './upload/images',
-  filename:(req,file,cb) => {
-   return cb(null,`${file.fieldname}_${Date.now()}${path.extname(file.originalname)}`);
-  }
+
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
+
+// Cloudinary storage configuration
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "chinar-shop",
+    allowed_formats: ["jpg", "jpeg", "png", "gif", "webp"],
+    transformation: [{ width: 500, height: 500, crop: "limit" }]
+  },
 });
 
 const upload = multer({
-  storage:storage,
+  storage: storage,
   limits: { fileSize: 10 * 1024 * 1024 } // 10 MB limit
 });
 
@@ -45,7 +61,7 @@ app.post("/upload",upload.single('product'),(req,res) => {
   }
   res.json({
     success: 1,
-    image_url: `http://localhost:${port}/images/${req.file.filename}`
+    image_url: req.file.path // Cloudinary returns the full URL in req.file.path
   });
 });
 
@@ -301,7 +317,7 @@ app.post("/signup", async (req, res) => {
     await user.save();
 
     // Generate JWT Token
-    const token = jwt.sign({ id: user.id }, 'secret_ecom', {
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || 'secret_ecom', {
       expiresIn: "1h",
     });
 
@@ -329,7 +345,7 @@ app.post("/login", async (req, res) => {
     }
 
     // Generate JWT Token
-    const token = jwt.sign({ id: user.id }, "secret_ecom", { expiresIn: "1h" });
+    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET || "secret_ecom", { expiresIn: "1h" });
 
     res.status(200).json({ message: "Login successful", token });
   } catch (error) {
@@ -345,7 +361,7 @@ const fetchUser = async (req,res,next)=>{
   }
   else{
     try {
-      const data = jwt.verify(token,'secret_ecom');
+      const data = jwt.verify(token, process.env.JWT_SECRET || 'secret_ecom');
       req.user = {id:data.id};
       next();
     } catch (error) {
