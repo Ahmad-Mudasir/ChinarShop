@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./NewCollection.css";
 import Item from "../Item/Item";
+import { API_ENDPOINTS } from "../../config/api";
 
 const NewCollections = () => {
   const [newCollections, setNewCollections] = useState([]);
@@ -10,7 +11,7 @@ const NewCollections = () => {
   useEffect(() => {
     const fetchNewCollections = async () => {
       try {
-        const response = await fetch("http://localhost:4000/newcollections");
+        const response = await fetch(API_ENDPOINTS.NEW_COLLECTIONS);
         if (!response.ok) {
           throw new Error("Failed to fetch new collections");
         }

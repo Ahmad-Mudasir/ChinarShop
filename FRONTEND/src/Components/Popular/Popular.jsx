@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Popular.css";
 import Item from "../Item/Item";
+import { API_ENDPOINTS } from "../../config/api";
 
 const Popular = () => {
   const [popularWomen, setPopularWomen] = useState([]);
@@ -10,7 +11,7 @@ const Popular = () => {
   useEffect(() => {
     const fetchPopularWomen = async () => {
       try {
-        const response = await fetch("http://localhost:4000/popular-women");
+        const response = await fetch(API_ENDPOINTS.POPULAR_WOMEN);
         if (!response.ok) {
           throw new Error("Failed to fetch popular women's products");
         }

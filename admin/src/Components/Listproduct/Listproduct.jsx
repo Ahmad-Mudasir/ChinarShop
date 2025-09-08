@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import axios from "axios"
 import toast from "react-hot-toast"
 import { Trash2, Loader2 } from "lucide-react"
+import { API_ENDPOINTS } from "../../config/api"
 import "./Listproduct.css"
 
 const Listproduct = () => {
@@ -17,7 +18,7 @@ const Listproduct = () => {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      const response = await axios.get("http://localhost:4000/allproducts")
+      const response = await axios.get(API_ENDPOINTS.ALL_PRODUCTS)
       if (response.data.success) {
         setProducts(response.data.products)
       }
@@ -31,7 +32,7 @@ const Listproduct = () => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await axios.post("http://localhost:4000/removeproduct", { id })
+      const response = await axios.post(API_ENDPOINTS.REMOVE_PRODUCT, { id })
       if (response.data.success) {
         toast.success("Product removed successfully!")
         setProducts(products.filter((product) => product.id !== id))

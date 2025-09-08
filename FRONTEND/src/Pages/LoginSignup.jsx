@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { API_ENDPOINTS } from '../config/api';
 import "./CSS/LoginSignup.css";
 
 const LoginSignup = () => {
@@ -19,7 +20,7 @@ const LoginSignup = () => {
   // Signup function
   const Signup = async () => {
     try {
-      const response = await axios.post("http://localhost:4000/signup", {
+      const response = await axios.post(API_ENDPOINTS.SIGNUP, {
         name: formData.Name,
         email: formData.Email,
         password: formData.Password,
@@ -42,7 +43,7 @@ const LoginSignup = () => {
   //Login Function
   const Login = async () => {
     try {
-      const response = await axios.post("http://localhost:4000/login", {
+      const response = await axios.post(API_ENDPOINTS.LOGIN, {
         email: formData.Email,
         password: formData.Password,
       });
